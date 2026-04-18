@@ -19,12 +19,4 @@ public class TicketResponse {
     private UserResponse assignedTo;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    @Data
-    @Builder
-    public static class UserResponse {
-        private String id;
-        private String name;
-        private String role;
-    }
 }

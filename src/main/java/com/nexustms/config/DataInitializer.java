@@ -3,6 +3,7 @@ package com.nexustms.config;
 import com.nexustms.model.*;
 import com.nexustms.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import java.time.LocalDateTime;
@@ -10,7 +11,9 @@ import java.time.LocalDateTime;
 @Configuration
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
+    @Autowired
     private final UserRepository userRepository;
+    @Autowired
     private final TicketRepository ticketRepository;
 
     @Override

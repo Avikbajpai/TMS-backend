@@ -3,10 +3,12 @@ package com.nexustms.controller;
 import com.nexustms.dto.*;
 import com.nexustms.model.TicketStatus;
 import com.nexustms.model.User;
+import com.nexustms.model.UserRole;
 import com.nexustms.repository.UserRepository;
 import com.nexustms.service.TicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,7 +21,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class TicketController {
+    @Autowired
     private final TicketService ticketService;
+    @Autowired
     private final UserRepository userRepository;
 
     @GetMapping("/tickets")
@@ -37,6 +41,15 @@ public class TicketController {
         return ApiResponse.<TicketResponse>builder()
                 .success(true)
                 .data(ticketService.createTicket(request, userId))
+                .build();
+    }
+
+    @PostMapping("/user")
+    public ApiResponse<UserResponse> createUser(@Valid @RequestBody User request) {
+
+        return ApiResponse.<UserResponse>builder()
+                .success(true)
+                .data(ticketService.createUser(request))
                 .build();
     }
 

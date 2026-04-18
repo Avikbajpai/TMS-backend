@@ -4,6 +4,7 @@ import com.nexustms.dto.*;
 import com.nexustms.model.*;
 import com.nexustms.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,13 +16,23 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TicketService {
+    @Autowired
     private final TicketRepository ticketRepository;
+    @Autowired
     private final UserRepository userRepository;
 
     public List<TicketResponse> getAllTickets() {
         return ticketRepository.findAll().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    public UserResponse createUser(User user){
+        User addedUser = userRepository.save(user);
+        return UserResponse.builder().name(addedUser.getName())
+                .id(addedUser.getId())
+                .role(addedUser.getRole().name())
+                .build();
     }
 
     public TicketResponse createTicket(CreateTicketRequest request, String userId) {
@@ -111,12 +122,12 @@ public class TicketService {
                 .category(t.getCategory())
                 .createdAt(t.getCreatedAt())
                 .updatedAt(t.getUpdatedAt())
-                .createdBy(TicketResponse.UserResponse.builder()
+                .createdBy(UserResponse.builder()
                         .id(t.getCreatedBy().getId())
                         .name(t.getCreatedBy().getName())
                         .role(t.getCreatedBy().getRole().name())
                         .build())
-                .assignedTo(t.getAssignedTo() == null ? null : TicketResponse.UserResponse.builder()
+                .assignedTo(t.getAssignedTo() == null ? null : UserResponse.builder()
                         .id(t.getAssignedTo().getId())
                         .name(t.getAssignedTo().getName())
                         .role(t.getAssignedTo().getRole().name())
