@@ -38,6 +38,7 @@ public class TicketService {
         return UserResponse.builder().name(addedUser.getName())
                 .id(addedUser.getId())
                 .role(addedUser.getRole().name())
+                .username(addedUser.getUsername())
                 .build();
     }
 

@@ -6,10 +6,12 @@ import com.nexustms.model.User;
 import com.nexustms.model.UserRole;
 import com.nexustms.repository.UserRepository;
 import com.nexustms.service.TicketService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,6 +27,8 @@ public class TicketController {
     private final TicketService ticketService;
     @Autowired
     private final UserRepository userRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @GetMapping("/tickets")
     public ApiResponse<List<TicketResponse>> getTickets() {
@@ -45,7 +49,8 @@ public class TicketController {
     @PostMapping("/tickets")
     public ApiResponse<TicketResponse> createTicket(
             @Valid @RequestBody CreateTicketRequest request,
-            @RequestHeader("x-user-id") String userId) {
+            HttpServletRequest httpRequest) {
+        String userId = (String) httpRequest.getAttribute("userId");
         return ApiResponse.<TicketResponse>builder()
                 .success(true)
                 .data(ticketService.createTicket(request, userId))
@@ -55,6 +60,8 @@ public class TicketController {
     @PostMapping("/user")
     public ApiResponse<UserResponse> createUser(@Valid @RequestBody User request) {
 
+        String password = request.getPassword();
+        request.setPassword(passwordEncoder.encode(password));
         return ApiResponse.<UserResponse>builder()
                 .success(true)
                 .data(ticketService.createUser(request))
@@ -65,7 +72,8 @@ public class TicketController {
     public ApiResponse<TicketResponse> updateStatus(
             @PathVariable String id,
             @RequestBody UpdateStatusRequest request,
-            @RequestHeader("x-user-id") String userId) {
+            HttpServletRequest httpRequest) {
+        String userId = (String) httpRequest.getAttribute("userId");
         User actor = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return ApiResponse.<TicketResponse>builder()
