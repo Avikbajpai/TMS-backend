@@ -34,6 +34,14 @@ public class TicketController {
                 .build();
     }
 
+    @GetMapping("/users")
+    public ApiResponse<List<UserResponse>> getUsers() {
+        return ApiResponse.<List<UserResponse>>builder()
+                .success(true)
+                .data(ticketService.getAllUsers())
+                .build();
+    }
+
     @PostMapping("/tickets")
     public ApiResponse<TicketResponse> createTicket(
             @Valid @RequestBody CreateTicketRequest request,

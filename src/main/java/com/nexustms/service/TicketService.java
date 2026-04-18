@@ -27,6 +27,12 @@ public class TicketService {
                 .collect(Collectors.toList());
     }
 
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(this::mapUserResponse)
+                .collect(Collectors.toList());
+    }
+
     public UserResponse createUser(User user){
         User addedUser = userRepository.save(user);
         return UserResponse.builder().name(addedUser.getName())
@@ -132,6 +138,14 @@ public class TicketService {
                         .name(t.getAssignedTo().getName())
                         .role(t.getAssignedTo().getRole().name())
                         .build())
+                .build();
+    }
+
+    private UserResponse mapUserResponse(User user){
+        return UserResponse.builder()
+                .role(user.getRole().name())
+                .id(user.getId())
+                .name(user.getName())
                 .build();
     }
 }
