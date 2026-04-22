@@ -12,7 +12,8 @@ import lombok.*;
 @Builder
 public class User {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
     @Column(nullable = false)
     private String name;
@@ -20,6 +21,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
+    @Column(unique = true)
     private String username;
     private String password;
 }

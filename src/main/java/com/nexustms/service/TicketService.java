@@ -33,12 +33,25 @@ public class TicketService {
                 .collect(Collectors.toList());
     }
 
-    public UserResponse createUser(User user){
-        User addedUser = userRepository.save(user);
-        return UserResponse.builder().name(addedUser.getName())
-                .id(addedUser.getId())
-                .role(addedUser.getRole().name())
-                .username(addedUser.getUsername())
+    public UserResponse createUser(User user) {
+        Optional<User> existing = userRepository.findByUsername(user.getUsername());
+        User finalUser;
+        if (existing.isPresent()) {
+            // UPDATE
+            User u = existing.get();
+            u.setName(user.getName());
+            u.setPassword(user.getPassword());
+            u.setRole(user.getRole());
+            finalUser = userRepository.save(u);
+        } else {
+            // INSERT
+            finalUser = userRepository.save(user);
+        }
+        return UserResponse.builder()
+                .name(finalUser.getName())
+                .id(finalUser.getId())
+                .role(finalUser.getRole().name())
+                .username(finalUser.getUsername())
                 .build();
     }
 

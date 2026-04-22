@@ -3,18 +3,18 @@ server:
   
 spring:
   datasource:
-    url: jdbc:h2:file:./data/nexustms
-    driverClassName: org.h2.Driver
-    username: sa
-    password: password
+    url: jdbc:postgresql://dpg-d7khoo2qqhas73bl348g-a.virginia-postgres.render.com:5432/nexus_0im5?sslmode=require
+    username: nexus_0im5_user
+    password: R10w3EhjtehwUgnzTpffXPYF27wvPxFA
+    driver-class-name: org.postgresql.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
 
   h2:
     console:
-      enabled: true
+      enabled: false
       path: /h2-console

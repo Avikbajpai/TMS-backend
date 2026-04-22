@@ -20,9 +20,9 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) {
         if (userRepository.count() > 0) return;
 
-        User customer = User.builder().id("u1").name("Alice Customer").role(UserRole.CUSTOMER).build();
-        User engineer = User.builder().id("u2").name("Bob Engineer").role(UserRole.ENGINEER).build();
-        User admin = User.builder().id("u3").name("Charlie Admin").role(UserRole.ADMIN).build();
+        User customer = User.builder().name("Alice Customer").role(UserRole.CUSTOMER).build();
+        User engineer = User.builder().name("Bob Engineer").role(UserRole.ENGINEER).build();
+        User admin = User.builder().name("Charlie Admin").role(UserRole.ADMIN).build();
 
         userRepository.save(customer);
         userRepository.save(engineer);
