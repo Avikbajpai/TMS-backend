@@ -32,18 +32,26 @@ public class TicketController {
 
     @GetMapping("/tickets")
     public ApiResponse<List<TicketResponse>> getTickets() {
-        return ApiResponse.<List<TicketResponse>>builder()
-                .success(true)
-                .data(ticketService.getAllTickets())
-                .build();
+        try {
+            return ApiResponse.<List<TicketResponse>>builder()
+                    .success(true)
+                    .data(ticketService.getAllTickets())
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.<List<TicketResponse>>builder().error(e.toString()).build();
+        }
     }
 
     @GetMapping("/users")
     public ApiResponse<List<UserResponse>> getUsers() {
-        return ApiResponse.<List<UserResponse>>builder()
-                .success(true)
-                .data(ticketService.getAllUsers())
-                .build();
+        try {
+            return ApiResponse.<List<UserResponse>>builder()
+                    .success(true)
+                    .data(ticketService.getAllUsers())
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.<List<UserResponse>>builder().error(e.toString()).build();
+        }
     }
 
     @PostMapping("/tickets")
@@ -58,19 +66,22 @@ public class TicketController {
                     .data(ticketService.createTicket(request, Long.valueOf(userId)))
                     .build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return ApiResponse.<TicketResponse>builder().error(e.toString()).build();
         }
     }
 
     @PostMapping("/user")
     public ApiResponse<UserResponse> createUser(@Valid @RequestBody User request) {
-
-        String password = request.getPassword();
-        request.setPassword(passwordEncoder.encode(password));
-        return ApiResponse.<UserResponse>builder()
-                .success(true)
-                .data(ticketService.createUser(request))
-                .build();
+        try {
+            String password = request.getPassword();
+            request.setPassword(passwordEncoder.encode(password));
+            return ApiResponse.<UserResponse>builder()
+                    .success(true)
+                    .data(ticketService.createUser(request))
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.<UserResponse>builder().error(e.toString()).build();
+        }
     }
 
     @PutMapping("/tickets/{id}/status")
@@ -78,38 +89,54 @@ public class TicketController {
             @PathVariable String id,
             @RequestBody UpdateStatusRequest request,
             HttpServletRequest httpRequest) {
-        Integer userId = (Integer) httpRequest.getAttribute("userId");
-        User actor = userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return ApiResponse.<TicketResponse>builder()
-                .success(true)
-                .data(ticketService.updateStatus(id, request.getStatus(), actor))
-                .build();
+        try {
+            Integer userId = (Integer) httpRequest.getAttribute("userId");
+            User actor = userRepository.findById(Long.valueOf(userId))
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            return ApiResponse.<TicketResponse>builder()
+                    .success(true)
+                    .data(ticketService.updateStatus(id, request.getStatus(), actor))
+                    .build();
+        } catch (ResponseStatusException e) {
+            return ApiResponse.<TicketResponse>builder().error(e.toString()).build();
+        }
     }
 
     @PutMapping("/tickets/{id}/assign")
     public ApiResponse<TicketResponse> assignTicket(
             @PathVariable String id,
             @RequestBody Map<String, String> body) {
-        return ApiResponse.<TicketResponse>builder()
-                .success(true)
-                .data(ticketService.assignTicket(id, body.get("engineerId")))
-                .build();
+        try {
+            return ApiResponse.<TicketResponse>builder()
+                    .success(true)
+                    .data(ticketService.assignTicket(id, body.get("engineerId")))
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.<TicketResponse>builder().error(e.toString()).build();
+        }
     }
 
     @GetMapping("/dashboard/stats")
     public ApiResponse<DashboardStatsResponse> getStats() {
-        return ApiResponse.<DashboardStatsResponse>builder()
-                .success(true)
-                .data(ticketService.getStats())
-                .build();
+        try {
+            return ApiResponse.<DashboardStatsResponse>builder()
+                    .success(true)
+                    .data(ticketService.getStats())
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.<DashboardStatsResponse>builder().error(e.toString()).build();
+        }
     }
 
     @GetMapping("/engineers")
     public ApiResponse<List<User>> getEngineers() {
-        return ApiResponse.<List<User>>builder()
-                .success(true)
-                .data(ticketService.getEngineers())
-                .build();
+        try {
+            return ApiResponse.<List<User>>builder()
+                    .success(true)
+                    .data(ticketService.getEngineers())
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.<List<User>>builder().error(e.toString()).build();
+        }
     }
 }
