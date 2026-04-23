@@ -50,11 +50,16 @@ public class TicketController {
     public ApiResponse<TicketResponse> createTicket(
             @Valid @RequestBody CreateTicketRequest request,
             HttpServletRequest httpRequest) {
-        String userId = (String) httpRequest.getAttribute("userId");
-        return ApiResponse.<TicketResponse>builder()
-                .success(true)
-                .data(ticketService.createTicket(request, userId))
-                .build();
+        try {
+            Integer userId = (Integer) httpRequest.getAttribute("userId");
+
+            return ApiResponse.<TicketResponse>builder()
+                    .success(true)
+                    .data(ticketService.createTicket(request, Long.valueOf(userId)))
+                    .build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PostMapping("/user")
@@ -73,8 +78,8 @@ public class TicketController {
             @PathVariable String id,
             @RequestBody UpdateStatusRequest request,
             HttpServletRequest httpRequest) {
-        String userId = (String) httpRequest.getAttribute("userId");
-        User actor = userRepository.findById(userId)
+        Integer userId = (Integer) httpRequest.getAttribute("userId");
+        User actor = userRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return ApiResponse.<TicketResponse>builder()
                 .success(true)

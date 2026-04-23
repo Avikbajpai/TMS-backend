@@ -29,7 +29,7 @@ public class DataInitializer implements CommandLineRunner {
         userRepository.save(admin);
 
         ticketRepository.save(Ticket.builder()
-                .id("T-1001")
+                .id(324L)
                 .title("Network Latency")
                 .description("Slow response time in the APAC region.")
                 .status(TicketStatus.OPEN)

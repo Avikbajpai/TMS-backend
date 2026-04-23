@@ -55,12 +55,11 @@ public class TicketService {
                 .build();
     }
 
-    public TicketResponse createTicket(CreateTicketRequest request, String userId) {
+    public TicketResponse createTicket(CreateTicketRequest request, Long userId) {
         User creator = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         Ticket ticket = Ticket.builder()
-                .id(UUID.randomUUID().toString().substring(0, 8))
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .priority(request.getPriority())
@@ -100,7 +99,7 @@ public class TicketService {
     public TicketResponse assignTicket(String ticketId, String engineerId) {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
-        User engineer = userRepository.findById(engineerId)
+        User engineer = userRepository.findById(Long.valueOf(engineerId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Engineer not found"));
 
         if (engineer.getRole() != UserRole.ENGINEER) {
